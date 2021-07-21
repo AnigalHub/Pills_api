@@ -1,0 +1,14 @@
+{
+  "mainDB": {
+    "user": "lang_user",
+    "host": "127.0.0.1",
+    "database": "Pills",
+    "password": "Z3ro_T0leranc3",
+    "port": 5432
+  },
+  "srv": {
+    "host": "127.0.0.1",
+    "prefix":"/api/",
+    "port": "8888"
+  }
+}
