@@ -10,12 +10,12 @@
               </b-input-group>
             </b-col>
             <b-col cols="3">
-              <b-button type="submit" variant="success">Найти в аптечке</b-button>
+              <b-button type="submit" variant="success" @click="onShow">Найти в аптечке</b-button>
               <b-button type="submit" variant="success">Добавить в список</b-button>
             </b-col>
           </b-row>
         </b-form>
-        <b-button type="submit" variant="success" @click="onShow">Показать</b-button>
+       <b-button type="submit" variant="success" @click="onShow">Показать</b-button>
       <b-overlay :show="isLoading" class="w-100 h-100">
           <b-table :fields="fields" :items="itemsList">
            <template #cell(name)='{item}'>
@@ -30,6 +30,9 @@
             <template #cell(year)='{item}'>
               <input :placeholder=item.year>
             </template>
+              <template #cell(change)>
+                  <b-button type="submit" variant="success">Изменить</b-button>
+              </template>
           </b-table>
       </b-overlay>
     </b-container>
@@ -51,6 +54,7 @@ export default {
         { key: "amount", label: "Количество" },
         { key: "storage", label: "Место хранения" },
         { key: "year", label: "Срок годности" },
+        { key: "change", label: "Изменить" },
       ],
       /**Список TODO */
       itemsList: [
@@ -66,7 +70,7 @@ export default {
           catch (error) {
              console.log(error)
           }
-      }
+      },
   }
 }
 </script>
