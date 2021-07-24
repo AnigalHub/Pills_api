@@ -29,7 +29,7 @@
             </b-col>
         </b-row>
         </b-form>
-       <b-button type="submit" variant="success" @click="onShow2">Показать</b-button>
+       <b-button type="submit" variant="success" @click="onShow">Показать</b-button>
        <b-overlay :show="isLoading" class="w-100 h-100">
           <b-table :fields="fields" :items="itemsList">
               <template #cell(id)='{item}'>
@@ -47,8 +47,9 @@
                <template #cell(year)='{item}'>
                   <input :placeholder=item.year>
                </template>
-               <template #cell(change)>
-                   <b-button type="submit" variant="success">Изменить</b-button>
+               <template #cell(change)='{item}'>
+                   <b-button type="submit" variant="outline-success">✓</b-button>
+                   <b-button type="submit" variant="outline-danger" @click="onDeleteTodo(item.id)">X</b-button>
                </template>
           </b-table>
       </b-overlay>
@@ -79,7 +80,7 @@ export default {
         { key: "amount", label: "Количество" },
         { key: "storage", label: "Место хранения" },
         { key: "year", label: "Срок годности" },
-        { key: "change", label: "Изменить" },
+        { key: "change", label: "Изменить | Удалить" },
       ],
       /**Список TODO */
       itemsList: [],
@@ -95,15 +96,6 @@ export default {
              console.log(error)
           }
       },
-      async onShow2(){
-          try{
-              const response = await axios.get('http://127.0.0.1:8889/api/gg')
-              this.itemsList = response.data
-          }
-          catch (error) {
-              console.log(error)
-          }
-      },
       async onAddTODO(){
           try{
               if(!this.newItem.name)
@@ -116,15 +108,21 @@ export default {
           }
       },
       async onAdd(){
-          await axios.post('http://127.0.0.1:8889/api/add', {
-                                                                    name: this.newItem.name,
-                                                                    id: this.newItem.id,
-                                                                    number: this.newItem.number,
-                                                                    storage:this.newItem.storage,
-                                                                    year:this.newItem.year
-          })
+          await axios.post('http://127.0.0.1:8889/api/add', {name: this.newItem.name,
+              id: this.newItem.id, number: this.newItem.number, storage:this.newItem.storage, year:this.newItem.year})
           this.newItem.name = ""
       },
+      async onDeleteTodo(id){
+          try{
+              await this.onDelete(id)
+              await this.onShow()
+          } catch(error){
+              this.logError(error)
+          }
+      },
+      async onDelete(id){
+          await axios.post('http://127.0.0.1:8889/api/delete',{id})
+      }
   }
 }
 </script>
@@ -153,9 +151,6 @@ export default {
     box-shadow: 1px 1px 5px;
     border-radius: 1px;
   }
-  .col{
-
-  }
   .col-3{
     width: 20% !important;
   }
@@ -165,6 +160,11 @@ export default {
   button{
     width: 100%;
     margin-bottom: 1vh !important;
+  }
+  table button{
+      width: 42%;
+      margin-right: 8%;
+      margin-bottom: 0 !important;
   }
   .input-group-text,.form-control {
     border: 1px solid #198754 !important;
