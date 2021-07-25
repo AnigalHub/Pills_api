@@ -2,33 +2,50 @@
   <div id="app">
     <b-container>
       <h2>Список препаратов:</h2>
-        <b-form class="w-100" @submit.prevent="onAddTODO">
-        <b-row>
-            <b-col id="input_all">
-                <b-input-group class="w-100" prepend="Название" ><b-form-input v-model="newItem.name"></b-form-input></b-input-group>
-                <b-row>
-                    <b-col>
-                        <b-input-group class="w-100" prepend="Номер" ><b-form-input v-model="newItem.id"></b-form-input></b-input-group>
-                    </b-col>
-                    <b-col>
-                        <b-input-group class="w-100" prepend="Количество"><b-form-input v-model="newItem.number"></b-form-input></b-input-group>
-                    </b-col>
-                    <b-col>
-                        <b-input-group class="w-100" prepend="Срок годности"><b-form-input v-model="newItem.year"></b-form-input></b-input-group>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-input-group class="w-100" prepend="Место хранения"><b-form-input v-model="newItem.storage"></b-form-input></b-input-group>
-                    </b-col>
-                </b-row>
-            </b-col>
-            <b-col cols="3">
-             <!-- <b-button type="submit" variant="success" @click="onShow">Найти в аптечке</b-button> -->
-              <b-button type="submit" variant="success" >Добавить в список</b-button>
-            </b-col>
-        </b-row>
+        <h5>Добавление</h5>
+        <hr>
+        <b-form class="w-100" id="input_all">
+            <b-row>
+                <b-col cols="3">
+                    <b-input-group class="w-100" prepend="Номер" ><b-form-input v-model="newItem.id"></b-form-input></b-input-group>
+                </b-col>
+                <b-col>
+                    <b-input-group class="w-100" prepend="Название" ><b-form-input v-model="newItem.name"></b-form-input></b-input-group>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols="4">
+                    <b-input-group class="w-100" prepend="Количество"><b-form-input v-model="newItem.number"></b-form-input></b-input-group>
+                </b-col>
+                <b-col>
+                    <b-input-group class="w-100" prepend="Срок годности"><b-form-input v-model="newItem.year"></b-form-input></b-input-group>
+                </b-col>
+                <b-col>
+                    <b-input-group class="w-100" prepend="Место хранения"><b-form-input v-model="newItem.storage"></b-form-input></b-input-group>
+                </b-col>
+                <b-col cols="3">
+                    <b-button type="submit" variant="success" @click="onAddTODO" >Добавить в список</b-button>
+                </b-col>
+            </b-row>
         </b-form>
+        <hr>
+        <h5>Поиск</h5>
+        <hr>
+        <b-form class="w-100">
+            <b-input-group class="w-100" prepend="Название" ><b-form-input v-model="newItem.name"></b-form-input></b-input-group>
+            <b-row>
+                <b-col>
+                    <b-input-group class="w-100" prepend="Срок годности"><b-form-input v-model="newItem.year"></b-form-input></b-input-group>
+                </b-col>
+                <b-col cols="5">
+                    <b-input-group class="w-100" prepend="Место хранения"><b-form-input v-model="newItem.storage"></b-form-input></b-input-group>
+                </b-col>
+                <b-col cols="3">
+                   <b-button type="submit" variant="success" @click="onShow">Найти в аптечке</b-button>
+                </b-col>
+            </b-row>
+        </b-form>
+        <hr>
        <b-button type="submit" variant="success" @click="onShow">Показать</b-button>
        <b-overlay :show="isLoading" class="w-100 h-100">
           <b-table :fields="fields" :items="itemsList">
@@ -89,17 +106,19 @@ export default {
   methods:{
       async onShow(){
           try{
+              this.isLoading = true
               const response = await axios.get('http://127.0.0.1:8889/api/')
               this.itemsList = response.data
           }
           catch (error) {
              console.log(error)
           }
+          finally{
+              this.isLoading = false
+          }
       },
       async onAddTODO(){
           try{
-              if(!this.newItem.name)
-                  return
               await this.onAdd()
               await this.onShow()
           }
@@ -138,10 +157,15 @@ export default {
     padding: 4vh !important;
     background: honeydew;
   }
+  h2,h5{
+
+  }
   h2{
-    text-align: center;
-    font-family: 'STIX Two Math', serif;
-    margin-bottom: 4vh !important;
+      text-align: center; font-family: 'STIX Two Math', serif;
+      margin-bottom: 4vh !important;
+  }
+  h5{
+      font-weight: bold;
   }
   .container{
     background: #fff;
@@ -155,7 +179,10 @@ export default {
     width: 20% !important;
   }
   #input_all{
-      padding: 0 5px 0 15px  !important;
+      padding: 0 15px 0 0  !important;
+  }
+  #input_all .col, #input_all .col-3,#input_all .col-4{
+      padding-right: 0 !important;
   }
   button{
     width: 100%;
@@ -169,6 +196,7 @@ export default {
   .input-group-text,.form-control {
     border: 1px solid #198754 !important;
     margin-bottom: 10px;
+      padding: 0.375rem 0.25rem !important;
   }
   th,tr{
     text-align: center !important;
