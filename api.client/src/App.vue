@@ -6,16 +6,12 @@
         <hr>
         <b-form class="w-100" id="input_all">
             <b-row>
+                <b-input-group class="w-100" prepend="Название" ><b-form-input v-model="newItem.name"></b-form-input></b-input-group>
                 <b-col>
                     <b-row>
-                        <b-col>
-                            <b-input-group class="w-100" prepend="Название" ><b-form-input v-model="newItem.name"></b-form-input></b-input-group>
-                        </b-col>
                         <b-col cols="4">
                             <b-input-group class="w-100" prepend="Количество"><b-form-input v-model="newItem.number"></b-form-input></b-input-group>
                         </b-col>
-                    </b-row>
-                    <b-row>
                         <b-col>
                             <b-input-group class="w-100" prepend="Срок годности"><b-form-input v-model="newItem.year"></b-form-input></b-input-group>
                         </b-col>
@@ -26,6 +22,25 @@
                 </b-col>
                 <b-col cols="3">
                     <b-button variant="success" @click="onAddTODO">Добавить в список</b-button>
+                </b-col>
+            </b-row>
+            <h5>Поиск</h5>
+            <hr>
+        </b-form>
+        <b-form class="w-100">
+            <b-row>
+                <b-col>
+                    <b-row>
+                        <b-col>
+                            <b-input-group class="w-100" prepend="Название" ><b-form-input v-model="FilterItem.name"></b-form-input></b-input-group>
+                        </b-col>
+                        <b-col>
+                            <b-input-group class="w-100" prepend="Место хранения"><b-form-input v-model="FilterItem.storage"></b-form-input></b-input-group>
+                        </b-col>
+
+                    </b-row>
+                </b-col>
+                <b-col cols="3">
                     <b-button variant="success" @click="onSearch">Найти в аптечке</b-button>
                 </b-col>
             </b-row>
@@ -69,6 +84,10 @@ export default {
          number: "",
          storage:"",
          year:"",
+      },
+      FilterItem:{
+          name: "",
+          storage:"",
       },
       /**Столбцы таблицы */
       fields:[
@@ -123,7 +142,7 @@ export default {
       },
       async onSearch(){
           try{
-              const response = await axios.post('http://127.0.0.1:8889/api/search',{name: this.newItem.name,storage:this.newItem.storage})
+              const response = await axios.post('http://127.0.0.1:8889/api/search',{name: this.FilterItem.name,storage:this.FilterItem.storage})
               this.itemsList = response.data
           }
           catch (error) {
@@ -161,11 +180,12 @@ export default {
   }
   .col-3{width: 20% !important;}
   #input_all{padding: 0 15px 0 0  !important;}
-  #input_all .col .col, #input_all .col-3,#input_all .col-4{padding-right: 0 !important;}
+  #input_all .col .col,#input_all .col-4{padding-right: 0 !important;}
   button{
     width: 100%;
     margin-bottom: 1vh !important;
   }
+
   table button{
       width: 42%;
       margin-right: 8%;
