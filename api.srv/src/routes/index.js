@@ -27,16 +27,25 @@ api.post('/delete', asyncHandler(async (req, res) => {
 //Поиск по базе
 api.post('/search', asyncHandler(async (req, res) => {
     const  data = req.body
-    let request, parametr;
 
-    if (data.name != ""){
+    let request, parametr;
+    if(data.name != "" && data.storage !=""){
+        request = "name = ($1) and storage = ($2)";
+        parametr = [data.name, data.storage]
+        console.log(parametr)
+    }
+    else if(data.name != ""){
         request = "name = ($1)";
         parametr = [data.name]
     }
-    if(data.storage != ""){
+    else{
         request = "storage = ($1)";
         parametr = [data.storage]
     }
+    
+
+
+
     const resp = (await db.query(`SELECT * from pills where ${request}`, parametr))
     const list = resp.rows
     res.json(list)
