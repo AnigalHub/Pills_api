@@ -27,7 +27,7 @@ api.post('/delete', asyncHandler(async (req, res) => {
 //Поиск по базе
 api.post('/search', asyncHandler(async (req, res) => {
     const  data = req.body
-
+/*
     let request, parametr;
     if(data.name != "" && data.storage !=""){
         request = "name = ($1) and storage = ($2)";
@@ -42,7 +42,23 @@ api.post('/search', asyncHandler(async (req, res) => {
         request = "storage = ($1)";
         parametr = [data.storage]
     }
-    
+    */
+    //получение
+    let obj ={name:data.name,storage:data.storage}
+    let arr_parametrs =[];
+        for (let key in obj){
+            console.log(obj[key])
+            arr_parametrs.push(obj[key]);
+        }
+        console.log("массив: " + arr_parametrs)
+
+    //
+    for (let i=0; i<arr_parametrs.length;i++){
+        if(arr_parametrs[i] != "" && arr_parametrs[i+1] != ""){
+           console.log("параметры: "+ arr_parametrs[i])
+        }
+
+    }
 
 
 
