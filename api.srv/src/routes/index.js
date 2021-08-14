@@ -27,9 +27,8 @@ api.post('/delete', asyncHandler(async (req, res) => {
 //Поиск по базе
 api.post('/search', asyncHandler(async (req, res) => {
     const  data = req.body
-
-    let request, parametr;
 /*
+   let request, parametr;
    if(data.name != "" && data.storage !=""){
        request = "name = ($1) and storage = ($2)";
        parametr = [data.name, data.storage]
@@ -48,39 +47,62 @@ api.post('/search', asyncHandler(async (req, res) => {
        console.log(parametr)
    }
 */
+    
+    let request_parameters ={name:data.name, storage:data.storage,year:data.year}
+    let arr = [];
+    let request;
 
-    let obj ={name:data.name, storage:data.storage}
-    let arr = Object.values(obj)
-    let new_arr
+    function NewArray(obj) {
+        arr = Object.values(obj).filter(n => n)
+        return arr
+    }
+    function Request(obj){
+        let arr_key =[]
+        let arr_request = []
+
+        for (let key in obj) {
+            if (obj[key] != ""){
+                arr_key.push(key)
+            }
+        }
+        for (let i=0; i<arr_key.length;i++){
+            if(arr[i] != "" && arr[i+1] != ""){
+                let a = `${arr_key[i]} = ($${i+1})`;
+                arr_request.push(a)
+                request = arr_request.join().split(',').join(' and ');
+            }
+        }
+        return request;
+    }
+    //console.log(NewArray(request_parameters))
+    //console.log(Request(request_parameters))
+
+
+   /* let arr = Object.values(obj).filter(n => n)
     console.log(arr)
-    let arr_key = Object.keys(obj)
-    console.log(arr_key)
+    let arr_key =[]
+    let arr_request = []
 
+    for (let key in obj) {
+       if (obj[key] != ""){
+           arr_key.push(key)
+       }
+    }
     for (let i=0; i<arr_key.length;i++){
-        if(arr[i] != "" && arr[i+1] != "" && arr[i+1] != undefined){
-            request = `${arr_key[i]} = ($${i+1}) and ${arr_key[i+1]} = ($${(i+2)})`;
-            break
-        }
-         if(arr[i] != "" && arr[i+1] != undefined){
-            request = `${arr_key[i]} = ($${i+1})`;
-            new_arr = arr.slice(i, arr.length-1)
-            arr=new_arr
-        }
-        else if(arr[i+1] != "" && arr[i] != undefined){
-            request = `${arr_key[i+1]} = ($${i+1})`;
-           new_arr = arr.slice(i+1, arr.length)
-            arr=new_arr
+        if(arr[i] != "" && arr[i+1] != ""){
+            let a = `${arr_key[i]} = ($${i+1})`;
+            arr_request.push(a)
+            request = arr_request.join().split(',').join(' and ');
         }
     }
+    console.log(request)
+    console.log("новый")
+    console.log(arr)
     console.log("____________")
+*/
 
 
-
-
-    // const resp = (await db.query(`SELECT * from pills where ${request}`, parametr))
-    const resp = (await db.query(`SELECT * from pills where ${request}`, arr))
-    console.log("ddd  " + resp)
-
+    const resp = (await db.query(`SELECT * from pills where ${Request(request_parameters)}`, NewArray(request_parameters)))
     const list = resp.rows
     res.json(list)
 }))
