@@ -37,7 +37,9 @@
                         <b-col>
                             <b-input-group class="w-100" prepend="Место хранения"><b-form-input v-model="FilterItem.storage"></b-form-input></b-input-group>
                         </b-col>
-
+                        <b-col>
+                            <b-input-group class="w-100" prepend="Срок годности"><b-form-input v-model="FilterItem.year"></b-form-input></b-input-group>
+                        </b-col>
                     </b-row>
                 </b-col>
                 <b-col cols="3">
@@ -88,6 +90,7 @@ export default {
       FilterItem:{
           name: "",
           storage:"",
+          year:"",
       },
       /**Столбцы таблицы */
       fields:[
@@ -142,7 +145,7 @@ export default {
       },
       async onSearch(){
           try{
-              const response = await axios.post('http://127.0.0.1:8889/api/search',{name: this.FilterItem.name,storage:this.FilterItem.storage})
+              const response = await axios.post('http://127.0.0.1:8889/api/search',{name: this.FilterItem.name,storage:this.FilterItem.storage,year:this.FilterItem.year})
               this.itemsList = response.data
           }
           catch (error) {
