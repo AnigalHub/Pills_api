@@ -49,8 +49,9 @@ api.post('/search', asyncHandler(async (req, res) => {
    }
 */
 
-    let obj ={name:data.name,storage:data.storage}
+    let obj ={name:data.name, storage:data.storage}
     let arr = Object.values(obj)
+    let new_arr
     console.log(arr)
     let arr_key = Object.keys(obj)
     console.log(arr_key)
@@ -58,12 +59,24 @@ api.post('/search', asyncHandler(async (req, res) => {
     for (let i=0; i<arr_key.length;i++){
         if(arr[i] != "" && arr[i+1] != "" && arr[i+1] != undefined){
             request = `${arr_key[i]} = ($${i+1}) and ${arr_key[i+1]} = ($${(i+2)})`;
-            console.log("вывод")
-            console.log(request)
+            break
+        }
+         if(arr[i] != "" && arr[i+1] != undefined){
+            request = `${arr_key[i]} = ($${i+1})`;
+            new_arr = arr.slice(i, arr.length-1)
+            arr=new_arr
+        }
+        else if(arr[i+1] != "" && arr[i] != undefined){
+            request = `${arr_key[i+1]} = ($${i+1})`;
+           new_arr = arr.slice(i+1, arr.length)
+            arr=new_arr
         }
     }
+    console.log("____________")
 
-    
+
+
+
     // const resp = (await db.query(`SELECT * from pills where ${request}`, parametr))
     const resp = (await db.query(`SELECT * from pills where ${request}`, arr))
     console.log("ddd  " + resp)
