@@ -27,42 +27,47 @@ api.post('/delete', asyncHandler(async (req, res) => {
 //Поиск по базе
 api.post('/search', asyncHandler(async (req, res) => {
     const  data = req.body
-/*
+
     let request, parametr;
-    if(data.name != "" && data.storage !=""){
-        request = "name = ($1) and storage = ($2)";
-        parametr = [data.name, data.storage]
-        console.log(parametr)
-    }
-    else if(data.name != ""){
-        request = "name = ($1)";
-        parametr = [data.name]
-    }
-    else{
-        request = "storage = ($1)";
-        parametr = [data.storage]
-    }
-    */
-    //получение
+/*
+   if(data.name != "" && data.storage !=""){
+       request = "name = ($1) and storage = ($2)";
+       parametr = [data.name, data.storage]
+       console.log(parametr)
+       console.log(request )
+   }
+
+  else if(data.name != ""){
+       request = "name = ($1)";
+       parametr = [data.name]
+       console.log(parametr)
+   }
+   else{
+       request = "storage = ($1)";
+       parametr = [data.storage]
+       console.log(parametr)
+   }
+*/
+
     let obj ={name:data.name,storage:data.storage}
-    let arr_parametrs =[];
-        for (let key in obj){
-            console.log(obj[key])
-            arr_parametrs.push(obj[key]);
-        }
-        console.log("массив: " + arr_parametrs)
+    let arr = Object.values(obj)
+    console.log(arr)
+    let arr_key = Object.keys(obj)
+    console.log(arr_key)
 
-    //
-    for (let i=0; i<arr_parametrs.length;i++){
-        if(arr_parametrs[i] != "" && arr_parametrs[i+1] != ""){
-           console.log("параметры: "+ arr_parametrs[i])
+    for (let i=0; i<arr_key.length;i++){
+        if(arr[i] != "" && arr[i+1] != "" && arr[i+1] != undefined){
+            request = `${arr_key[i]} = ($${i+1}) and ${arr_key[i+1]} = ($${(i+2)})`;
+            console.log("вывод")
+            console.log(request)
         }
-
     }
 
+    
+    // const resp = (await db.query(`SELECT * from pills where ${request}`, parametr))
+    const resp = (await db.query(`SELECT * from pills where ${request}`, arr))
+    console.log("ddd  " + resp)
 
-
-    const resp = (await db.query(`SELECT * from pills where ${request}`, parametr))
     const list = resp.rows
     res.json(list)
 }))
