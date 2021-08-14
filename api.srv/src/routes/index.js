@@ -47,24 +47,28 @@ api.post('/search', asyncHandler(async (req, res) => {
        console.log(parametr)
    }
 */
-    
+
     let request_parameters ={name:data.name, storage:data.storage,year:data.year}
     let arr = [];
     let request;
 
-    function NewArray(obj) {
+    //Создаем новый массив значений объекта (без пустых значений (''))
+    function FillArray(obj) {
         arr = Object.values(obj).filter(n => n)
         return arr
     }
-    function Request(obj){
+    //Создаем условия запроса
+    function CreateRequestConditions(obj){
         let arr_key =[]
         let arr_request = []
 
+        //создаем массив ключей объекта (которые без пустых значений (''))
         for (let key in obj) {
             if (obj[key] != ""){
                 arr_key.push(key)
             }
         }
+        //проходимся по массиву ключей и создаем строку в зависимости от длины массива и заменяем , на and
         for (let i=0; i<arr_key.length;i++){
             if(arr[i] != "" && arr[i+1] != ""){
                 let a = `${arr_key[i]} = ($${i+1})`;
@@ -74,8 +78,8 @@ api.post('/search', asyncHandler(async (req, res) => {
         }
         return request;
     }
-    //console.log(NewArray(request_parameters))
-    //console.log(Request(request_parameters))
+    //console.log(FillArray(request_parameters))
+    //console.log(CreateRequestConditions(request_parameters))
 
 
    /* let arr = Object.values(obj).filter(n => n)
@@ -102,7 +106,7 @@ api.post('/search', asyncHandler(async (req, res) => {
 */
 
 
-    const resp = (await db.query(`SELECT * from pills where ${Request(request_parameters)}`, NewArray(request_parameters)))
+    const resp = (await db.query(`SELECT * from pills where ${CreateRequestConditions(request_parameters)}`, FillArray(request_parameters)))
     const list = resp.rows
     res.json(list)
 }))
