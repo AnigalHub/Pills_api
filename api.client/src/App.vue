@@ -50,13 +50,13 @@
        <b-overlay :show="isLoading" class="w-100 h-100">
           <b-table :fields="fields" :items="itemsList">
                <template #cell(name)='{item}'>
-                  <div>{{item.name}}</div>
+                   <input :placeholder=item.name>
                </template>
                <template #cell(amount)='{item}'>
                   <input :placeholder=item.number>
                </template>
                <template #cell(storage)='{item}'>
-                  <div>{{item.storage}}</div>
+                   <input :placeholder=item.storage>
                </template>
                <template #cell(year)='{item}'>
                   <input :placeholder=item.year>
@@ -203,6 +203,16 @@ export default {
   table input{
     width: 45px;
     margin-bottom: 0;
+      border: none !important;
   }
+    table tr td:first-child input{
+        width: 105%;
+    }
+  table tr td:nth-child(3) input{
+      width: 110%;
+  }
+    table tr td:first-child{
+        width: 40%;
+    }
 
 </style>
