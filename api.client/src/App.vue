@@ -47,7 +47,6 @@
                 </b-col>
             </b-row>
         </b-form>
-       <b-button type="submit" variant="success" @click="onShow">Показать</b-button>
        <b-overlay :show="isLoading" class="w-100 h-100">
           <b-table :fields="fields" :items="itemsList">
                <template #cell(name)='{item}'>
