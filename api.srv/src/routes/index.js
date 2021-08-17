@@ -6,11 +6,7 @@ const { asyncHandler, errorCatcher } = require("../middlewares")
 const db = require("./../db")
 const buildQueryConstraints = require("../helpers/BuildQueryConstraints")
 
-//Получить список из базы
-api.get('/', asyncHandler(async (req, res) => {
-    const list = (await db.query('SELECT * FROM pills order by name')).rows
-    res.json(list)
-}))
+
 //Добавить в базу
 api.post('/add', asyncHandler(async (req, res) => {
     const data = req.body
