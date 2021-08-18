@@ -23,7 +23,7 @@ api.post('/delete', asyncHandler(async (req, res) => {
 api.post('/', asyncHandler(async (req, res) => {
     const  data = req.body
     let request_parameters ={name:data.name, storage:data.storage,year:data.year}
-    const resp = (await db.query(`SELECT * from pills ${buildQueryConstraints.CreateRequestConditions(request_parameters)}`, buildQueryConstraints.GetArray(request_parameters)))
+    const resp = (await db.query(`SELECT * from pills ${buildQueryConstraints.CreateRequestConditions(request_parameters)} ORDER BY NAME`, buildQueryConstraints.GetArray(request_parameters)))
     const list = resp.rows
     res.json(list)
 }))
