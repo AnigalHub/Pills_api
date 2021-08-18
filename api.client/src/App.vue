@@ -104,23 +104,10 @@ export default {
     }
   },
   methods:{
-      async onShow(){
-          try{
-              this.isLoading = true
-              const response = await axios.get('http://127.0.0.1:8889/api/')
-              this.itemsList = response.data
-          }
-          catch (error) {
-             console.log(error)
-          }
-          finally{
-              this.isLoading = false
-          }
-      },
       async onAddTODO(){
           try{
               await this.onAdd()
-              await this.onShow()
+              await this.onSearch()
           }
           catch(error) {
               console.log(error)
@@ -134,7 +121,7 @@ export default {
       async onDeleteTodo(id){
           try{
               await this.onDelete(id)
-              await this.onShow()
+              await this.onSearch()
           } catch(error){
               this.logError(error)
           }
@@ -144,11 +131,15 @@ export default {
       },
       async onSearch(){
           try{
-              const response = await axios.post('http://127.0.0.1:8889/api/search',{name: this.FilterItem.name,storage:this.FilterItem.storage,year:this.FilterItem.year})
+              this.isLoading = true
+              const response = await axios.post('http://127.0.0.1:8889/api/',{name: this.FilterItem.name,storage:this.FilterItem.storage,year:this.FilterItem.year})
               this.itemsList = response.data
           }
           catch (error) {
               console.log(error)
+          }
+          finally{
+              this.isLoading = false
           }
       },
 
