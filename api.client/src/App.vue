@@ -50,19 +50,19 @@
        <b-overlay :show="isLoading" class="w-100 h-100">
           <b-table :fields="fields" :items="itemsList">
                <template #cell(name)='{item}'>
-                   <input :placeholder=item.name>
+                   <input v-model="item.name" >
                </template>
                <template #cell(amount)='{item}'>
-                  <input :placeholder=item.number>
+                  <input v-model="item.number">
                </template>
                <template #cell(storage)='{item}'>
-                   <input :placeholder=item.storage>
+                   <input v-model="item.storage">
                </template>
                <template #cell(year)='{item}'>
-                  <input :placeholder=item.year>
+                  <input  v-model="item.year">
                </template>
                <template #cell(change)='{item}'>
-                   <b-button type="submit" variant="outline-success">✓</b-button>
+                   <b-button type="submit" variant="outline-success" @click="onUpdateTodo(item,item.id)">✓</b-button>
                    <b-button type="submit" variant="outline-danger" @click="onDeleteTodo(item.id)">X</b-button>
                </template>
           </b-table>
@@ -114,8 +114,7 @@ export default {
           }
       },
       async onAdd(){
-          await axios.post('http://127.0.0.1:8889/api/add', {name: this.newItem.name,
-               number: this.newItem.number, storage:this.newItem.storage, year:this.newItem.year})
+          await axios.post('http://127.0.0.1:8889/api/add', {name: this.newItem.name, number: this.newItem.number, storage:this.newItem.storage, year:this.newItem.year})
           this.newItem.name = ""
       },
       async onDeleteTodo(id){
@@ -128,6 +127,18 @@ export default {
       },
       async onDelete(id){
           await axios.post('http://127.0.0.1:8889/api/delete',{id})
+      },
+      async onUpdateTodo(changes,id){
+          try{
+              await this.onUpdate(changes,id)
+              await this.onSearch()
+          }
+          catch(error){
+              this.logError(error)
+          }
+      },
+      async onUpdate(changes,id){
+          await axios.post('http://127.0.0.1:8889/api/update',{name: changes.name,number:changes.number,storage:changes.storage,year:changes.year,id})
       },
       async onSearch(){
           try{
@@ -192,9 +203,13 @@ export default {
   th,tr{text-align: center !important;}
   tr td:first-child{text-align: left !important;}
   table input{
-    width: 45px;
-    margin-bottom: 0;
+      width: 45px;
+      margin-bottom: 0;
       border: none !important;
+  }
+  table input:focus{
+      outline: 1px solid;
+
   }
     table tr td:first-child input{
         width: 105%;
@@ -202,8 +217,14 @@ export default {
   table tr td:nth-child(3) input{
       width: 110%;
   }
-    table tr td:first-child{
-        width: 40%;
-    }
+  table tr td:first-child{
+      width: 40%;
+  }
+
+  table input:focus::-webkit-input-placeholder {
+      color: transparent;
+  }
+
+
 
 </style>
